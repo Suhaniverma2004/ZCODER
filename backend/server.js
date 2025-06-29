@@ -1,5 +1,3 @@
-// zcoder-backend/server.js
-
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -7,16 +5,23 @@ const http = require('http');
 const { Server } = require("socket.io");
 require('dotenv').config();
 
-const ChatRoom = require('./models/ChatRoom');
+// Model Imports
+const ChatRoom = require('./models/Chatroom');
 const Message = require('./models/Message');
 const User = require('./models/User');
-const apiRoutes = require('./routes/api');
-const authRoutes = require('./routes/auth');
 
+// --- THIS IS THE CRITICAL PART ---
+// We must import BOTH route files.
+const apiRoutes = require('./routes/api');
+const authRoutes = require('./routes/auth'); // For login/signup
+
+// --- SECTION 2: APP CONFIGURATION & MIDDLEWARE ---
 const app = express();
+// cors() must be used BEFORE the routes are defined.
 app.use(cors());
 app.use(express.json());
 
+// --- SECTION 3: DATABASE CONNECTION ---
 const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
@@ -28,9 +33,12 @@ const connectDB = async () => {
 };
 connectDB();
 
-app.use('/api', apiRoutes);
-app.use('/api/auth', authRoutes);
+// --- SECTION 4: API ROUTE SETUP ---
+// This tells Express how to handle incoming URLs.
+app.use('/api', apiRoutes); // URLs starting with /api go to api.js
+app.use('/api/auth', authRoutes); // URLs starting with /api/auth go to auth.js
 
+// --- SECTION 5: SOCKET.IO INTEGRATION ---
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {

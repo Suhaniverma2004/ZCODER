@@ -1,75 +1,47 @@
 const express = require('express');
-const http = require('http');
-const { Server } = require('socket.io');
 const cors = require('cors');
-const mongoose = require('mongoose');
-require('dotenv').config();
-
-const apiRoutes = require('./routes/api');
-const Message = require('./models/Message');
+const axios = require('axios');
+require('dotenv').config(); // This will look for a .env file in the 'backend' folder
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// --- DATABASE CONNECTION ---
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('MongoDB connected successfully.'))
-  .catch(err => console.error('MongoDB connection error:', err));
+// Using the JDoodle API
+const languageConfig = {
+  javascript: { lang: 'nodejs', versionIndex: '4' },
+  python: { lang: 'python3', versionIndex: '4' },
+  cpp: { lang: 'cpp17', versionIndex: '1' },
+};
 
-// --- API ROUTES ---
-app.use('/api', apiRoutes);
-// You can keep your /api/execute route for the code runner if you want
+app.post('/api/execute', async (req, res) => {
+  const { language, code } = req.body;
+  const config = languageConfig[language];
 
-// --- SOCKET.IO INTEGRATION ---
-const server = http.createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: "http://localhost:3000", // Your React app's address
-    methods: ["GET", "POST"]
+  if (!config) {
+    return res.status(400).json({ error: 'Unsupported language.' });
+  }
+
+  const payload = {
+    clientId: process.env.JDOODLE_CLIENT_ID,
+    clientSecret: process.env.JDOODLE_CLIENT_SECRET,
+    script: code,
+    language: config.lang,
+    versionIndex: config.versionIndex,
+  };
+
+  try {
+    const response = await axios.post('https://api.jdoodle.com/v1/execute', payload);
+    res.json({ output: response.data.output });
+  } catch (error) {
+    console.error("Error calling execution API:", error.response ? error.response.data : error.message);
+    res.status(500).json({ error: 'An error occurred while executing the code.' });
   }
 });
 
-io.on('connection', (socket) => {
-  console.log(`User connected: ${socket.id}`);
-
-  // Handle joining a chat room
-  socket.on('joinRoom', async (room) => {
-    socket.join(room);
-    console.log(`User ${socket.id} joined room: ${room}`);
-    
-    // Send previous messages to the user
-    try {
-        const previousMessages = await Message.find({ chatRoom: room }).sort({ timestamp: 1 });
-        socket.emit('previousMessages', previousMessages);
-    } catch (err) {
-        console.error('Error fetching previous messages:', err);
-    }
-  });
-
-  // Handle new messages
-  socket.on('sendMessage', async (data) => {
-    const { room, user, text } = data;
-    const newMessage = new Message({
-      chatRoom: room,
-      user: user,
-      text: text,
-    });
-    try {
-        await newMessage.save();
-        // Broadcast the new message to everyone in the room
-        io.to(room).emit('receiveMessage', newMessage);
-    } catch (err) {
-        console.error('Error saving message:', err);
-    }
-  });
-
-  socket.on('disconnect', () => {
-    console.log(`User disconnected: ${socket.id}`);
-  });
-});
-
-const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+// --- THIS IS THE FIX ---
+// This server is now correctly assigned to port 5000.
+const PORT = 5000;
+app.listen(PORT, () => {
+  console.log(`Code Execution Server is running on port ${PORT}`);
 });

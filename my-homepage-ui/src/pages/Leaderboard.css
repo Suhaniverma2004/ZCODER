@@ -1,0 +1,46 @@
+.leaderboard-table {
+  background-color: #34495e;
+  border-radius: 15px;
+  border: 1px solid #4a6a85;
+  overflow: hidden;
+  margin-top: 2rem;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+.leaderboard-header, .leaderboard-row {
+  display: grid;
+  grid-template-columns: 100px 2fr 1fr 1fr;
+  align-items: center;
+  padding: 1rem 1.5rem;
+}
+.leaderboard-header {
+  background-color: #2c3e50;
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #bdc3c7;
+  border-bottom: 1px solid #4a6a85;
+}
+.leaderboard-row {
+  border-bottom: 1px solid #4a6a85;
+  transition: background-color 0.2s ease;
+}
+.leaderboard-row:last-child {
+  border-bottom: none;
+}
+.leaderboard-row:hover {
+  background-color: #4a6a85;
+}
+.leaderboard-row span {
+  font-size: 1rem;
+}
+.leaderboard-row .rank {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #3498db;
+}
+.leaderboard-row .user-name {
+  font-weight: bold;
+  color: #ecf0f1;
+}
+.leaderboard-row .total-score {
+  font-weight: bold;
+}

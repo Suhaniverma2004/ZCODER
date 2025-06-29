@@ -103,6 +103,37 @@ router.post('/bookmarks', async (req, res) => {
     res.status(400).json({ message: 'Error creating bookmark: ' + err.message });
   }
 });
+router.put('/users/:userId', async (req, res) => {
+   console.log(`Received profile update request for user: ${req.params.id}`);
+  console.log('Data received:', req.body);
+  try {
+    const { name, title, email, github, linkedin } = req.body;
+    
+    // Find the user by their ID and update the specified fields
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.userId,
+      {
+        name,
+        // 'title' is from the frontend state, but we don't have a 'title' field in our User model.
+        // We'll ignore it on the backend for now, but you could add it to the model if you wish.
+        email, 
+        github,
+        linkedin,
+      },
+      { new: true } // This option returns the updated document
+    ).select('-password'); // Exclude the password from the returned object
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    res.json(updatedUser);
+  } catch (err) {
+    console.error('Error updating user:', err);
+    res.status(500).json({ message: 'Server error while updating user.' });
+  }
+});
+
 
 // --- Export the router ---
 // This makes all the routes defined above available to server.js

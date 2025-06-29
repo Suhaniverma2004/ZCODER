@@ -1,0 +1,99 @@
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #282c34; 
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+.login-container {
+  background: #2c3e50;
+  padding: 3rem;
+  border-radius: 15px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  max-width: 450px;
+  text-align: center;
+  border: 1px solid #3498db;
+}
+.login-header {
+  color: #ffffff;
+  font-size: 3.5rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin: 0 0 0.5rem 0;
+  text-shadow: 0 0 10px rgba(52, 152, 219, 0.5), 0 0 20px rgba(52, 152, 219, 0.3);
+}
+.login-subtitle {
+  color: #bdc3c7;
+  margin-bottom: 2.5rem;
+  font-size: 1rem;
+}
+.login-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.login-container input {
+  padding: 1rem;
+  border: 1px solid #4a5568;
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: #1a202c;
+  color: #ecf0f1;
+  transition: all 0.3s ease;
+}
+.login-container input::placeholder {
+  color: #718096;
+}
+.login-container input:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
+}
+.auth-button {
+  padding: 1rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #3498db;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+}
+.auth-button:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(52, 152, 219, 0.2);
+}
+.toggle-view {
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  color: #bdc3c7;
+}
+.toggle-button {
+  background: none;
+  border: none;
+  color: #3498db;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-left: 0.5rem;
+  transition: color 0.2s;
+}
+.toggle-button:hover {
+  color: #5dade2;
+}
+.error-message {
+  color: #e74c3c;
+  background-color: rgba(231, 76, 60, 0.15);
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  margin-top: -0.5rem;
+}

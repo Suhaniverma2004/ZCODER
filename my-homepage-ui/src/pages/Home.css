@@ -1,0 +1,23 @@
+.home-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+.home-header {
+  flex-shrink: 0;
+}
+.home-content-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr; 
+  gap: 2rem;
+  align-items: start;
+}
+.main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.right-sidebar {
+  position: sticky;
+  top: 2rem;
+}

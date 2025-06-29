@@ -1,94 +1,85 @@
-// zcoder-backend/routes/auth.js
-
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcryptjs'); // Library for hashing passwords
-const User = require('../models/User'); // Your User model
+const bcrypt = require('bcryptjs');
+const User = require('../models/User');
 
-// --- SIGNUP ROUTE ---
-// Handles new user registration
+/**
+ * @route   POST /api/auth/signup
+ * @desc    Register a new user with a properly hashed password
+ */
 router.post('/signup', async (req, res) => {
   const { name, email, password } = req.body;
 
-  // Basic validation
-  if (!name || !email || !password) {
-    return res.status(400).json({ message: 'Please enter all fields.' });
-  }
-
   try {
-    // 1. Check if a user with that email already exists in the database
     let user = await User.findOne({ email });
     if (user) {
       return res.status(400).json({ message: 'User with this email already exists.' });
     }
 
-    // 2. If the user is new, create a new user instance
-    user = new User({ name, email, password });
+    const initialScore = Math.floor(Math.random() * 500) + 50;
+    const initialSolved = Math.floor(Math.random() * 10) + 1;
+    
+    user = new User({
+      name,
+      email,
+      password, // Temporarily hold the plain password
+      totalScore: initialScore,
+      solvedCount: initialSolved
+    });
 
-    // 3. Hash the password before saving it to the database
+    // Hash the password *before* saving
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(password, salt);
 
-    // 4. Save the new user to the database
     await user.save();
-
-      user = new User({ 
-      name, 
-      email, 
-      password,
-      totalScore: initialScore,  // Add initial score
-      solvedCount: initialSolved
-    });
     
-    // Send back a success response
     res.status(201).json({ message: 'User created successfully!', userId: user.id });
 
   } catch (err) {
-    console.error('Signup Error:', err.message);
-    res.status(500).send('Server Error');
+    console.error('Signup Server Error:', err.message);
+    res.status(500).send('Server error during signup process.');
   }
-  const initialScore = Math.floor(Math.random() * 500) + 50; // Random score between 50-550
-    const initialSolved = Math.floor(Math.random() * 10) + 1;  // Random solved count 1-11
-
 });
 
 
-// --- LOGIN ROUTE ---
-// Handles existing user login
+/**
+ * @route   POST /api/auth/login
+ * @desc    Authenticate a user by comparing the hashed password
+ */
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
-  // Basic validation
-  if (!email || !password) {
-    return res.status(400).json({ message: 'Please enter all fields.' });
-  }
-
   try {
-    // 1. Check if a user with that email exists
     const user = await User.findOne({ email });
     if (!user) {
-      // Use a generic message for security - don't reveal if the email exists
       return res.status(400).json({ message: 'Invalid credentials.' });
     }
 
-    // 2. If the user exists, compare the submitted password with the hashed password in the DB
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid credentials.' });
     }
     
-    // 3. If passwords match, login is successful
+    const userForClient = {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        title: user.title,
+        github: user.github,
+        linkedin: user.linkedin,
+        solvedCount: user.solvedCount,
+        totalScore: user.totalScore,
+    };
+    
     res.status(200).json({ 
       message: 'Login successful!', 
-      userId: user.id, 
-      name: user.name 
+      user: userForClient 
     });
 
   } catch (err) {
-    console.error('Login Error:', err.message);
-    res.status(500).send('Server Error');
+    console.error('Login Server Error:', err.message);
+    res.status(500).send('Server error during login.');
   }
-  
 });
 
 module.exports = router;

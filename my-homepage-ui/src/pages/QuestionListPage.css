@@ -1,0 +1,71 @@
+.question-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 800px;
+  margin: 2rem auto;
+}
+.question-link-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  background-color: #34495e;
+  border: 1px solid #4a6a85;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.question-link-card:hover {
+  transform: translateY(-5px);
+  border-color: #3498db;
+}
+.question-info h3 {
+  color: #ecf0f1;
+  margin: 0 0 0.25rem 0;
+  font-size: 1.2rem;
+}
+.question-topic {
+    margin: 0 !important;
+    text-align: left !important;
+    font-size: 0.9rem !important;
+    color: #7f8c8d !important;
+}
+.question-meta {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+.difficulty-tag {
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #fff;
+}
+.difficulty-tag.easy { background-color: #27ae60; }
+.difficulty-tag.medium { background-color: #f39c12; }
+.difficulty-tag.hard { background-color: #e74c3c; }
+.join-chat-link {
+  color: #3498db;
+  font-weight: bold;
+}
+.bookmark-btn {
+background: none;
+border: none;
+font-size: 1.5rem;
+cursor: pointer;
+color: #556a81;
+transition: all 0.2s ease;
+padding: 0.25rem;
+}
+.bookmark-btn:hover {
+transform: scale(1.2);
+color: #7f8c8d;
+}
+.bookmark-btn.bookmarked {
+color: #f1c40f; /* A gold color for bookmarked items */
+}
+.bookmark-btn.bookmarked:hover {
+color: #f39c12;
+}
